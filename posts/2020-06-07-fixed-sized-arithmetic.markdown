@@ -21,7 +21,12 @@ The first numerical perspective on set of bits I will look at is that of 'unsign
 | 5       | 11    | (1, 1, 0, 0) |
 | 12       | 1100    | (0, 0, 1, 1) |
 
-Let us denote \\[ \\mathbb{N}_n = \\{ m: m \\in \\mathbb{N}, m \\lt n\\} \\] so that the bijective mapping defined above can be written succintly \\[ f: S_n \\to \\mathbb{N}_n \\] and we see it is entirely natural to consider these bit strings as numbers in this perspective, nothing clever is going on. We have some big questions unanswered though, it is useless to have a representation of numbers without being able to manipulate and combine them in order to perform computation. We need
-standard operaters like addition and multiplication defined too.
+Let us denote \\[ \\mathbb{N}_n = \\{ m: m \\in \\mathbb{N}, m \\lt 2^n\\} \\] so that the bijective mapping defined above can be written succintly \\[ f: S_n \\to \\mathbb{N}_n \\] and we see it is entirely natural to consider these bit strings as numbers in this perspective, nothing clever is going on. We have some big questions unanswered though, it is useless to have a representation of numbers without being able to manipulate and combine them in order to perform computation. We need standard operators like addition and multiplication defined for a perspective too.
 
 #### Bitstring operators I
+
+Let us first talk about addition. We would like to define an operator \\(+_n: S_n \\times S_n \\to S_n\\) which is "as close as possible" to the standard addition operator on \\(\\mathbb{N}_n\\). As a first attempt we can simply define \\[ s_1 +_n s_2 = f^{-1}(f(s_1) + f(s_2)) \\quad \\forall  s_1, s_2 \\in S_n\\] We can see an immediate problem though. What if \\(f(s_1) + f(s_2) \\ge 2^n\\)? In this case we would have an issue because \\(f(s_1) + f(s_2)\\) falls outside the domain of \\(f^{-1}\\). Ok then we can make a second attempt and use modular arithmetic to define \\[  s_1 +_n s_2 = f^{-1}(f(s_1) + f(s_2)\\ (\\mathrm{mod}\\ n)) \\quad \\forall  s_1, s_2 \\in S_n\\] and this is indeed how addition is defined for the unsigned integer perspective on \\(S_n\\). It is straightforward to see that the pair \\((S_n, +_n)\\) satifies the criteria of an Abelian group and so an analogous subtraction operator follows immediately. Similarly to addition then we can define multiplication \\[ s_1 *_n s_2 = f^{-1}(f(s_1) * f(s_2)\\ (\\mathrm{mod}\\ n)) \\quad \\forall  s_1, s_2 \\in S_n\\] 
+
+
+
+
