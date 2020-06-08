@@ -39,13 +39,15 @@ Let us first talk about addition. We would like to define an operator \\(+_n: S_
 
 We can see an immediate problem though. What if \\(f(s_1) + f(s_2) \\ge 2^n\\)? In this case we would have an issue because \\(f(s_1) + f(s_2)\\) falls outside the domain of \\(f^{-1}\\). Ok then we can make a second attempt and use modular arithmetic to define 
 
-\\[  s_1 +_n s_2 = f^{-1}(f(s_1) + f(s_2)\\ (\\mathrm{mod}\\ n)) \\quad \\forall  s_1, s_2 \\in S_n\\]
+\\[  s_1 +_n s_2 = f^{-1}(f(s_1) + f(s_2)\\ (\\mathrm{mod}\\ 2^n)) \\quad \\forall  s_1, s_2 \\in S_n\\]
 
 and this is indeed how addition is defined for  \\(S_n\\) and how it is implemented at the processor level. It is straightforward to see that the pair \\((S_n, +_n)\\) satifies the criteria of an Abelian group and so an analogous subtraction operator follows immediately. Similarly to addition then we can define multiplication 
 
-\\[ s_1 *_n s_2 = f^{-1}(f(s_1) * f(s_2)\\ (\\mathrm{mod}\\ n)) \\quad \\forall  s_1, s_2 \\in S_n\\]
+\\[ s_1 *_n s_2 = f^{-1}(f(s_1) * f(s_2)\\ (\\mathrm{mod}\\ 2^n)) \\quad \\forall  s_1, s_2 \\in S_n\\]
 
 and again this is how multiplication is implemented at the processor level.
+
+In summary we have defined operators on fixed length sequences of \\(n\\)  bytes which represent addition, subtraction and multiplication between numbers in the range \\(0 \\le m \\lt 2^n\\) by considering the bytes to be the binary expansion of the numbers and using modular arithmetic techniques. 
 
 
 ### Signed Integers
@@ -71,11 +73,11 @@ This isn't as straightforward as before and the mapping is more involved. The mo
 
 I found this really amazing when I first came across it, and I think its an elegant way to define the perspective. We can see that the most significant bit adds a 'weighting term' to determine the sign. 
 
-So we can think of \\(\\mathbb{Z}_n\\) as \\(S_n\\) under our signed perspective and \\(\\mathbb{N}_n\\) as \\(S_n\\) under our unsigned perspective. We now have the tools to define the bijection between \\(\\mathbb{Z}_n\\) and \\(S_n\\) which associates the numbers in each who have the same bitstring in \\(S^n\\). Let us define 
+So we can think of \\(\\mathbb{Z}_n\\) as \\(S_n\\) under our signed perspective and \\(\\mathbb{N}_n\\) as \\(S_n\\) under our unsigned perspective. We can now define the bijection between the perspectives as 
 
-\\[h: \\mathbb{Z}_n \\to \\mathbb{N}_n\\]
+\\[h = f \\circ g^{-1}: \\mathbb{Z}_n \\to \\mathbb{N}_n \\]
 
-by 
+which can be numerically defined by 
 
 \\[
   h(m) = 
@@ -96,3 +98,37 @@ and
 \\]
 
 #### Twos Complement Arithmetic
+
+The processor operations using modular arithmetic are reused when we operate on twos-complement numbers. For example we define twos-complement addition on n bits to be
+
+\\[ x +^t_n y = g(g^{-1}(x) +_n g^{-1}(y)) = h^{-1}(h(x) + h(y)\\ (\\mathrm{mod}\\ 2^n))\\quad\\forall x,y\\in\\mathbb{Z}_n \\]
+
+In essence we cast both numbers to unsigned integers, sum modulo \\(2^n\\) and then cast back to signed integers. There is really no difference between what is happening at the bit level, simply how we interpret the bits. Further if we write 
+
+\\[ x = -x\_{n - 1}2^{n - 1} + \\sum\_{i = 0}^{n - 2}x_i2^i \\]
+
+and observe 
+
+\\[h(x) = x\_{n - 1}2^n + x\\] 
+
+then the definition of addition for twos-complement reduces to
+
+\\[ x +^t_n y = h^{-1}(x + y\\ (\\mathrm{mod}\\ 2^n)) \\]
+
+We can perform some case analysis to see we have three possibilities
+
+\\[
+  x +_n^t y = 
+  \\begin{cases}
+    x + y - 2^n, & \\text{for } 2^{n - 1} \\le x + y  \\\\
+    x + y, & \\text{for } -2^{n - 1} \\le x + y \\lt 2^{n - 1} \\\\
+    x + y + 2^n, & \\text{for } x + y \\lt -2^{n - 1} 
+  \\end{cases}
+\\]
+
+We see that there are now two ways of wrapping. The first case says that we added two negative numbers to form a large negative number which cannot be represented with the number of bytes we have, the conversion to unsigned, modular sum and then conversion back to signed mean we end up with a positive number. This is known as negative overflow. The middle case is the 'nice' case, i.e. we can represent the summation correctly with the amount of bits we have and the result is as expected. The third is the case of positive overflow, where the sum of two positive integers is too large to store and the result gets wrapped round to a negative number. 
+
+The negation of a twos-complement number is mostly straightforward as for \\(a\\)
+
+
+N.B The point isn't to define operators on \\(S_n\\) and then reuse them for both perspectives, the point is to define sensible operators on both \\(\mathbb{N}_n\\) and \\(\\mathbb{Z}_n\\) and addition and multiplication can share a processor procedure because of the way they are defined.
