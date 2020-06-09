@@ -2,13 +2,25 @@
 title: Fixed Size Integer Arithmetic
 ---
 
+---
+
+---
+
 ### Motivation
 
 Recently I started reading the book 'Computer Systems: A Programmer's Perspective' on the advice of [Teach yourself CS](www.teachyourselfcs.com) as I am somewhat lacking in my knowledge of foundational computer science and I thought it would be a good idea to try and summarize certain topics in the book as I go along in order to cement them into my mind. Today it is the joys of integer arithmetic and how it must be handled differently in a computer to how it is handled when one is not constrained by the laws of physics.
 
+---
+
+---
+
 ### The Constraints
 
 In my mind I currently think of a computer as a processor alongside multiple different 'areas of memory' between which information can be transferred. By areas of memory I mean a linear fixed size array of bits which are partitioned into contiguous groups of 4, i.e. bytes. These bytes each then have their own unique address which is represented by their index in the array. The processor takes some set of bytes as an input which indicates a predefined procedure to follow as well as the input to the procedure and executes it to change the state of the memory. A significant number of procedures that a processor can perform relate to arithmetic of numbers which are represented in binary form and importantly for us the inputs of these procedures are made up of a fixed number of bytes. In the case of \\(n \\in \\mathbb{N}\\) bytes we can only have \\(2^n\\) unique configurations of bits and thus can only represent this many unique numbers in any single perspective on the bits. It is interesting to think about what arithmetic means in this case, how it is implemented and the differences between the 'usual' case where there are no constraints on the quantity of numbers we can consider. In this post I will talk about 2 different perspectives which lets one view the set of fixed length bitstrings as integers.
+
+---
+
+---
 
 ### Unsigned Integers
 
@@ -29,26 +41,25 @@ so that the bijective mapping defined above can be written succintly
 
 \\[ f: S_n \\to \\mathbb{N}_n \\]
 
-and we see it is entirely natural to consider these bit strings as numbers in this perspective, nothing clever is going on here. We have some questions unanswered though, it is useless to have a representation of numbers without being able to manipulate and combine them in order to perform computation. We need standard operators like addition and multiplication defined for \\(S_n\\) for the processor to work with them.
+and we see it is entirely natural to consider these bit strings as numbers in this perspective, nothing clever is going on here. We have some questions unanswered though, it is useless to have a representation of numbers without being able to manipulate and combine them in order to perform computation. We need standard operators like addition and multiplication defined for \\(\\mathbb{N}_n\\) which can then be encoded as processor procedures in order for the computer to work with our first representation of numbers.
+
+---
 
 #### Bitstring operators
 
-Let us first talk about addition. We would like to define an operator \\(+_n: S_n \\times S_n \\to S_n\\) which is "as close as possible" to the standard addition operator on \\(\\mathbb{N}_n\\). As a first attempt we can simply define 
+Let us first talk about addition. We would like to define an operator \\(+_n^u: \\mathbb{N}_n \\times \\mathbb{N}_n \\to \\mathbb{N}_n\\) which is "as close as possible" to the standard addition operator on \\(\\mathbb{N}\\). We can see that it is possible to sum two numbers in \\(\\mathbb{N}_n\\) to get a number larger that \\(2^n\\) and so we must modify the normal summation operator in some way. The simplest way is using modular arithmetic to write
 
-\\[ s_1 +_n s_2 = f^{-1}(f(s_1) + f(s_2)) \\quad \\forall  s_1, s_2 \\in S_n\\]
+\\[  x +_n^u y = x + y\\ (\\mathrm{mod}\\ 2^n) \\quad \\forall  x, y \\in \\mathbb{N}_n\\]
 
-We can see an immediate problem though. What if \\(f(s_1) + f(s_2) \\ge 2^n\\)? In this case we would have an issue because \\(f(s_1) + f(s_2)\\) falls outside the domain of \\(f^{-1}\\). Ok then we can make a second attempt and use modular arithmetic to define 
+and this is indeed how addition is defined for unsigned integers. It is straightforward to see that the pair \\((\\mathbb{N}_n, +^u_n)\\) satifies the criteria of an Abelian group and so an analogous subtraction operator follows immediately. Similarly to addition then we can define multiplication 
 
-\\[  s_1 +_n s_2 = f^{-1}(f(s_1) + f(s_2)\\ (\\mathrm{mod}\\ 2^n)) \\quad \\forall  s_1, s_2 \\in S_n\\]
+\\[ x *_n^u y = xy\\ (\\mathrm{mod}\\ 2^n) \\quad \\forall  x,y \\in \\mathbb{N}_n\\]
 
-and this is indeed how addition is defined for  \\(S_n\\) and how it is implemented at the processor level. It is straightforward to see that the pair \\((S_n, +_n)\\) satifies the criteria of an Abelian group and so an analogous subtraction operator follows immediately. Similarly to addition then we can define multiplication 
+In summary we have defined operators representing addition, subtraction and multiplication on natual numbers in a fixed range \\(0 \\le m \\lt 2^n\\), we have seen how this range can be mapped naturally onto fixed length sequences of bytes implying procedures can be implemented for the processor to carry out these operators. All this is abstracted away from the user so that these numbers and operators can be worked with in computations.
 
-\\[ s_1 *_n s_2 = f^{-1}(f(s_1) * f(s_2)\\ (\\mathrm{mod}\\ 2^n)) \\quad \\forall  s_1, s_2 \\in S_n\\]
+---
 
-and again this is how multiplication is implemented at the processor level.
-
-In summary we have defined operators on fixed length sequences of \\(n\\)  bytes which represent addition, subtraction and multiplication between numbers in the range \\(0 \\le m \\lt 2^n\\) by considering the bytes to be the binary expansion of the numbers and using modular arithmetic techniques. 
-
+---
 
 ### Signed Integers
 
@@ -97,25 +108,42 @@ and
   \\end{cases}
 \\]
 
+these functions define what happens when we cast between signed and unsigned data types in languages where both are supported such as C. The program defined below demonstrates this for \\(n = 16\\).
+
+```c
+#include <stdio.h>
+
+main()
+{
+    unsigned short x = 65535; // == 2^16 - 1
+    printf("%d\n", (short) x); 
+    // -1
+
+    x = 25;
+    printf("%d\n", (short) x);
+    // 25
+
+    short y = -10;
+    printf("%d\n", (unsigned short) y);
+    // 65526 == -10 + 2^16
+
+    y = 1243;
+    printf("%d\n", (unsigned short) y);
+    // 1243
+}
+
+```
+
+---
+
 #### Twos Complement Arithmetic
 
-The processor operations using modular arithmetic are reused when we operate on twos-complement numbers. For example we define twos-complement addition on n bits to be
+We define twos-complement addition on n bits using modular arithmetic in the same way before casting the result (which can be viewed as an unsigned integer) back to a signed integer by way of the function \\(h\\) defined above.
 
-\\[ x +^t_n y = g(g^{-1}(x) +_n g^{-1}(y)) = h^{-1}(h(x) + h(y)\\ (\\mathrm{mod}\\ 2^n))\\quad\\forall x,y\\in\\mathbb{Z}_n \\]
+\\[  x +_n^t y = h^{-1}(x + y\\ (\\mathrm{mod}\\ 2^n)) \\quad \\forall  x, y \\in \\mathbb{Z}_n\\]
 
-In essence we cast both numbers to unsigned integers, sum modulo \\(2^n\\) and then cast back to signed integers. There is really no difference between what is happening at the bit level, simply how we interpret the bits. Further if we write 
 
-\\[ x = -x\_{n - 1}2^{n - 1} + \\sum\_{i = 0}^{n - 2}x_i2^i \\]
-
-and observe 
-
-\\[h(x) = x\_{n - 1}2^n + x\\] 
-
-then the definition of addition for twos-complement reduces to
-
-\\[ x +^t_n y = h^{-1}(x + y\\ (\\mathrm{mod}\\ 2^n)) \\]
-
-We can perform some case analysis to see we have three possibilities
+and we can perform some case analysis to see we have three possibilities
 
 \\[
   x +_n^t y = 
@@ -126,9 +154,46 @@ We can perform some case analysis to see we have three possibilities
   \\end{cases}
 \\]
 
-We see that there are now two ways of wrapping. The first case says that we added two negative numbers to form a large negative number which cannot be represented with the number of bytes we have, the conversion to unsigned, modular sum and then conversion back to signed mean we end up with a positive number. This is known as negative overflow. The middle case is the 'nice' case, i.e. we can represent the summation correctly with the amount of bits we have and the result is as expected. The third is the case of positive overflow, where the sum of two positive integers is too large to store and the result gets wrapped round to a negative number. 
+We see that there are now two ways of wrapping. The first case says that when we add two negative numbers to form a negative number which lies outside \\(\\mathbb{Z}_n\\) after taking the modulus and then converting back to a signed integer we end up with a positive number, this is known as negative overflow. The middle case is the 'nice' case, i.e. we can represent the summation correctly with the range available and the result is as expected. The third is the case of positive overflow, where the sum of two positive integers is too large to store and the result gets wrapped round to a negative number. 
 
-The negation of a twos-complement number is mostly straightforward as for \\(a\\)
+We can see that it is possible to use exactly the same processor procedure for signed and unsigned addition by writing \\(x \\in \\mathbb{Z}_n\\) as
+
+\\[ x = -x\_{n - 1}2^{n - 1} + \\sum\_{i = 0}^{n - 2}x_i2^i \\]
+
+and observing 
+
+\\[h(x) = x\_{n - 1}2^n + x\\] 
+
+so that 
+
+\\[ x + y\\ (\\mathrm{mod}\\ 2^n) = h(x) + h(y)\\ (\\mathrm{mod}\\ 2^n)\\]
+
+We can therefore think of twos-complement addition to be casting to unsigned integers before applying unsigned addition and then casting the result back. Remember each unsigned/signed integer pair that \\(h\\) associates together have the same underlying representation in \\(S_n\\).
 
 
-N.B The point isn't to define operators on \\(S_n\\) and then reuse them for both perspectives, the point is to define sensible operators on both \\(\mathbb{N}_n\\) and \\(\\mathbb{Z}_n\\) and addition and multiplication can share a processor procedure because of the way they are defined.
+The negation of a twos-complement number is mostly straightforward as 
+
+\\[x \\in \\mathbb{Z} - \\{-2^{n -1}\\} \\implies -x \\in \\mathbb{Z} - \\{-2^{n -1}\\} \\]
+
+but the case of \\(-2^{n-1}\\) is special as its usual negation lies outside of \\(\\mathbb{Z}_n\\). However we observe that 
+
+\\[-2^{n - 1} +_n^t -2^{n-1} = 0\\]
+
+so it is it's own negation.
+
+Finally we define multiplication on signed integers as 
+
+\\[  x *_n^t y = h^{-1}(xy\\ (\\mathrm{mod}\\ 2^n)) \\quad \\forall  x, y \\in \\mathbb{Z}_n\\]
+
+which matches the general pattern we have been following and has the same case analysis as for signed addition in that we have both positive and negative overflow. We see in the same way as we did for addition that the same processor procedure can be used for both signed and unsigned multiplication by writing \\(x \\in \\mathbb{Z}_n\\) as
+
+\\[ x = -x\_{n - 1}2^{n - 1} + \\sum\_{i = 0}^{n - 2}x_i2^i \\]
+
+and observing 
+
+\\[h(x) = x\_{n - 1}2^n + x\\] 
+
+so that 
+
+\\[ xy\\ (\\mathrm{mod}\\ 2^n) = h(x)h(y)\\ (\\mathrm{mod}\\ 2^n)\\]
+
