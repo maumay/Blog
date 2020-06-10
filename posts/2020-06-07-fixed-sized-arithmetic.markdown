@@ -8,7 +8,7 @@ title: Fixed Size Integer Arithmetic
 
 ### Motivation
 
-Recently I started reading the book 'Computer Systems: A Programmer's Perspective' on the advice of [Teach yourself CS](www.teachyourselfcs.com) as I am somewhat lacking in my knowledge of foundational computer science and I thought it would be a good idea to try and summarize certain topics in the book as I go along in order to cement them into my mind. Today it is the joys of integer arithmetic and how it must be handled differently in a computer to how it is handled when one is not constrained by the laws of physics.
+Recently I started reading the book 'Computer Systems: A Programmer's Perspective' on the advice of [Teach yourself CS](http://teachyourselfcs.com) as I am somewhat lacking in my knowledge of foundational computer science and I thought it would be a good idea to try and summarize certain topics in the book as I go along in order to cement them into my mind. In this post I will attempt to paraphrase section 2.3 on integer arithmetic.
 
 ---
 
@@ -37,7 +37,7 @@ Let us denote
 
 \\[ \\mathbb{N}_n = \\{ m: m \\in \\mathbb{N}, m \\lt 2^n\\} \\]
 
-so that the bijective mapping defined above can be written succintly 
+so that the bijective mapping defined above can be written succinctly
 
 \\[ f: S_n \\to \\mathbb{N}_n \\]
 
@@ -45,17 +45,17 @@ and we see it is entirely natural to consider these bit strings as numbers in th
 
 ---
 
-#### Bitstring operators
+#### Unsigned Arithmetic
 
 Let us first talk about addition. We would like to define an operator \\(+_n^u: \\mathbb{N}_n \\times \\mathbb{N}_n \\to \\mathbb{N}_n\\) which is "as close as possible" to the standard addition operator on \\(\\mathbb{N}\\). We can see that it is possible to sum two numbers in \\(\\mathbb{N}_n\\) to get a number larger that \\(2^n\\) and so we must modify the normal summation operator in some way. The simplest way is using modular arithmetic to write
 
 \\[  x +_n^u y = x + y\\ (\\mathrm{mod}\\ 2^n) \\quad \\forall  x, y \\in \\mathbb{N}_n\\]
 
-and this is indeed how addition is defined for unsigned integers. It is straightforward to see that the pair \\((\\mathbb{N}_n, +^u_n)\\) satifies the criteria of an Abelian group and so an analogous subtraction operator follows immediately. Similarly to addition then we can define multiplication 
+and this is indeed how addition is defined for unsigned integers. It is straightforward to see that the pair \\((\\mathbb{N}_n, +^u_n)\\) satifies the criteria of an Abelian group and so an analogous subtraction operator follows immediately. Similarly we can define multiplication 
 
 \\[ x *_n^u y = xy\\ (\\mathrm{mod}\\ 2^n) \\quad \\forall  x,y \\in \\mathbb{N}_n\\]
 
-In summary we have defined operators representing addition, subtraction and multiplication on natual numbers in a fixed range \\(0 \\le m \\lt 2^n\\), we have seen how this range can be mapped naturally onto fixed length sequences of bytes implying procedures can be implemented for the processor to carry out these operators. All this is abstracted away from the user so that these numbers and operators can be worked with in computations.
+Processor procedures representing these operators are implemented to allow the computer to perform calculations using natural numbers.
 
 ---
 
@@ -65,12 +65,12 @@ In summary we have defined operators representing addition, subtraction and mult
 
 #### Bitstrings as Integers II
 
-The second numerical perspective on \\(S_n\\) I will look at in this post is that of 'signed integers' i.e. a perspective that lets us handle negative numbers too. The cardinality of \\(S_n\\) remains the same so in order to handle 'extra' numbers we need to sacrifice some in the range \\(0 \\le m \\lt 2^n\\) which is supported by the unsigned perspective. Before we decide how to make the sacrifice there are a couple of things which are desirable in an integer perspective defined on \\(S_n\\)
+The second numerical perspective on \\(S_n\\) I will look at in this post is that of 'signed integers' i.e. a perspective that lets us handle negative numbers. The cardinality of \\(S_n\\) remains the same, so in order to handle 'extra' numbers we need to sacrifice some in the range \\(0 \\le m \\lt 2^n\\) which is supported by the unsigned perspective. Before we decide how to make the sacrifice there are a couple of things which are desirable in an integer perspective defined on \\(S_n\\)
 
  1. Any perspective should bijectively map a contiguous block of integers to \\(S_n\\)
  2. If the perspective supports both positive and negative numbers then there should be an equal amount of each.
 
-Well the first condition removes any silly perspectives such as taking every other number or something similar and the second makes the contiguous block 'centred'. Actually with these conditions then there are really only two blocks to consider and they are both practically the same. The first is \\(-2^{n - 1} \\le m \\lt 2^{n - 1}\\) and the second is \\(-2^{n - 1} \\lt m \\le 2^{n - 1}\\). From now on we just consider the first range, let us define 
+Well the first condition removes any silly perspectives such as taking every other number or something similar and the second makes the contiguous block 'centred'. Actually with these conditions there are really only two blocks to consider and they are both practically the same. The first is \\(-2^{n - 1} \\le m \\lt 2^{n - 1}\\) and the second is \\(-2^{n - 1} \\lt m \\le 2^{n - 1}\\). From now on we just consider the first range, let us define 
 
 \\[\\mathbb{Z}_n = \\{m: m\\in \\mathbb{Z}, -2^{n - 1} \\le m \\lt 2^{n - 1}\\}\\]
 
@@ -82,7 +82,7 @@ This isn't as straightforward as before and the mapping is more involved. The mo
 
 \\[g((b_i)\_{i = 0}^{n-1}) = -b\_{n - 1}2^{n - 1} + \\sum\_{i = 0}^{n - 2} b_i2^i\\]
 
-I found this really amazing when I first came across it, and I think its an elegant way to define the perspective. We can see that the most significant bit adds a 'weighting term' to determine the sign. 
+I found this really amazing when I first came across it, and I think it's an elegant way to define the perspective. We can see that the most significant bit adds a 'weighting term' to determine the sign. 
 
 So we can think of \\(\\mathbb{Z}_n\\) as \\(S_n\\) under our signed perspective and \\(\\mathbb{N}_n\\) as \\(S_n\\) under our unsigned perspective. We can now define the bijection between the perspectives as 
 
@@ -179,7 +179,7 @@ but the case of \\(-2^{n-1}\\) is special as its usual negation lies outside of 
 
 \\[-2^{n - 1} +_n^t -2^{n-1} = 0\\]
 
-so it is it's own negation.
+so it is its own negation.
 
 Finally we define multiplication on signed integers as 
 
@@ -196,4 +196,14 @@ and observing
 so that 
 
 \\[ xy\\ (\\mathrm{mod}\\ 2^n) = h(x)h(y)\\ (\\mathrm{mod}\\ 2^n)\\]
+
+---
+
+---
+
+#### Summary
+
+We have defined operators representing addition, subtraction and multiplication on integers in the fixed ranges \\(0 \\le m \\lt 2^n\\) and \\(-2^{n - 1} \\le m \\lt 2^{n - 1}\\) which we called unsigned and signed integers respectively. We have seen how these ranges can both be mapped bijectively to a fixed length sequences of bytes (when \\(n\\) is divisible by \\(4\\)) meaning procedures can be implemented for the processor to carry out arithmetic with both. We have seen the numerical definition of the bijective mapping between the two ranges and how this corresponds to casting in languages such as C which support both data types. 
+
+All this is neatly abstracted away from the application programmer so that these numbers and operators can be worked with in computations but one must be mindful about the limitations of this representation of integers. Performing a computation which leads to a result outside of the supported range will lead to overflow and nonsensical results. Carelessness about integer overflow has led to a great many security vulnerabilites and hard to detect bugs in various systems throughout the years.
 
