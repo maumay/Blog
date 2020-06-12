@@ -35,6 +35,22 @@ Evidence for the societal hierarchy is also present with different punishments s
 The twelve tables give no evidence that Rome had evolved beyond the point of an average size agricultural town which had some basic distinctions in its social hierarchy and which had made a rudimentary attempt to encode rules to follow when small scale infractions happened between individuals whther that relates to physical violence, theft or other property issues. There is no indication at this point of what Rome was to become. What they had done was uncommon but unremarkable, ancient
 Hammurabi of Babylon had encoded laws about 1000 years earlier!
 
+#### The Conflict of the Orders
+
+[146-153]
+
+With all early Roman history there are three sides, the truth - unfortunately lost to us, the truth according to later Roman writers and historians looking back on their predecessors and the composition of hard evidence to construct half-truth - certainly less suitable for a great story but perhaps more satisfying. We first turn to the stories of the period available to us through the writings of those to come and then contrast to the hard evidence we have at our disposal.
+
+
+The founding of the republic at the beginning of the fifth century BCE signalled the start of a great equalising of rights between the ruling patricians and the ruled plebian class over the next 200 years where the exclusive rights of the rulers were slowly eroded to parity. The Patricians had a monopolistic control over society with power stemming purely from their bloodline and ancestry. They controlled the wealth of Rome and all laws that were enacted at the time. A particular grievance of the plebians was the ease in which they could find themselves indebted and essentially enslaved for seemingly arbitrary reasons. It is written that in 496BCE the plebian class staged the first major strike/mutiny of the republic where they refused to work or fight until there were concrete nd visible changes. The result of this was the first change to the political structure of the city caused directly by plebian action. A committee know as the 'tribuni plebis' was introduced whose responsibility it was to represent the interests of the plebians alongside a separate deomcratic assembly specifically for them which crucially did not base the weight of a persons votes on wealth as had been the case in previous models. It is unclear exactly how much influence over the laws this group had initially but
+200 years later they possessed the final say for laws over all Roman citizens.
+
+
+The twelve tables were said to have been written in the middlde of the fifth century BCE after the plebian class became tired of the opacity of the laws in the city which were available only to patrician eyes but applicable only to plebians. Normal political order was suspended for a year and ten men were assigned the task of codifying the laws from which a ten plates were inscribed. The job was not finished however another ten men were chosen the following year to complete the job. Their temperament and outlook was somewhat different however and an infamous (to later Romas such as Cicero at least) was incribed forbidding the joining of the two classes by matrimony. These men seem to have had ideas above their station leading to tyrannical behaviour and extremely unsavoury consequences which ultimately culminated in riots, them disbanding and a "return to liberty". The offending law regarding marriage was scrubbed and the rest of the tablets became a celebrated foundation of law and order for the republic.
+
+One of the notable concessions that took place later during the slow erosion of exclusive patrician rights was the concession in 367BCE where after decades of resistance from hardline patricians it was decided that one of the two consul positions would be opened up to plebians. A few years later it was decided that both consuls could come from the plebian class if that was how the votes fell. Another great concession in 327BCE was the end of enslavement due to debt, i.e. to be free became an inalienable part of Roman citizenship.
+
+Concerns the struggles of plebian class to equalise society with the patricians
 
 #### Outline
 
